@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aprendo a construir un texto - S2B</title>
+<style>
+:root{--blue:#1f5fae;--light:#eef6ff;--green:#287a45;--red:#a93434;--ink:#182230;--muted:#64748b;--line:#d7e0ea;--card:#fff;--yellow:#fff8d8}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f5f8fc;color:var(--ink)}
+.wrap{max-width:1100px;margin:auto;padding:20px}.top{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px}
+h1{margin:0 0 6px;font-size:30px}.sub{color:var(--muted)}.progress{height:12px;background:#e5eaf0;border-radius:20px;overflow:hidden;margin-top:14px}
+#bar{height:100%;background:var(--blue);width:0;transition:.3s}.grid{display:grid;grid-template-columns:1fr 280px;gap:14px}
+.card{background:white;border:1px solid var(--line);border-radius:18px;padding:20px}.reading{font-size:20px;line-height:1.6;background:var(--light)}
+.stage{font-weight:700;color:var(--blue);font-size:14px;text-transform:uppercase}.q{font-size:24px;font-weight:700;line-height:1.3;margin:12px 0 18px}
+.option{display:block;width:100%;text-align:left;margin:9px 0;padding:14px 16px;border:2px solid var(--line);background:white;border-radius:13px;font-size:18px;cursor:pointer}
+.option:hover{border-color:var(--blue)}.option.correct{border-color:var(--green);background:#effaf2}.option.wrong{border-color:var(--red);background:#fff2f2}
+.feedback{min-height:54px;margin-top:14px;padding:13px;border-radius:12px;background:#f7f9fc;border:1px solid var(--line);font-size:17px}
+.bank h3{margin-top:0}.chip{display:inline-block;padding:7px 9px;margin:4px;border-radius:12px;background:var(--light);border:1px solid #cbdcf1}
+.sentence{padding:10px;margin:7px 0;background:var(--yellow);border-radius:10px;border:1px solid #eadf9a}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}.btn{padding:12px 18px;border:0;border-radius:12px;font-size:17px;font-weight:bold;cursor:pointer}
+.primary{background:var(--blue);color:white}.secondary{background:white;border:1px solid var(--line)}button:disabled{opacity:.4;cursor:not-allowed}
+.creative label{display:block;font-weight:bold;margin:13px 0 5px}.creative input,.creative textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:17px}
+.plan{background:var(--light);padding:15px;border-radius:12px;margin-top:15px}.check label{font-weight:normal;margin:8px 0}
+.hidden{display:none}.orderItem{display:flex;align-items:center;gap:8px;padding:10px;margin:8px 0;background:#fff8d8;border:1px solid #eadf9a;border-radius:10px}
+.orderItem span{flex:1}.mini{padding:7px 10px;border:1px solid var(--line);background:white;border-radius:8px;cursor:pointer}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.q{font-size:21px}.reading{font-size:18px}}
+@media print{.nav,.top .progress,.option{display:none!important}.wrap{max-width:none}.card{border:0}.creative{display:block!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>📚 Aprendo a construir un texto</h1>
+    <div class="sub" id="progressText">Comenzamos leyendo, pensando y construyendo.</div>
+    <div class="progress"><div id="bar"></div></div>
+  </div>
+
+  <div id="reading" class="card reading">
+    <div class="stage">📖 Texto base</div>
+    <h2>Un día en el parque</h2>
+    <p>El sábado, Ana fue al parque con su hermano Luis. Llevaron una pelota y una botella de agua. En el parque encontraron a su amiga Sofía. Los tres jugaron con la pelota cerca de un árbol. Después, se sentaron en un banco para descansar y beber agua. Al final, Ana y Luis regresaron a casa con su mamá.</p>
+    <p><b>Recuerda:</b> puedes volver a leer el texto todas las veces que lo necesites.</p>
+  </div>
+
+  <div id="learning" class="grid" style="margin-top:14px">
+    <main class="card">
+      <div id="stage" class="stage"></div>
+      <div id="skill" class="sub" style="margin-top:5px"></div>
+      <div id="question" class="q"></div>
+      <div id="options"></div>
+      <div id="feedback" class="feedback">Lee y selecciona tu respuesta.</div>
+    </main>
+    <aside class="card bank">
+      <h3>🧠 Banco de ideas</h3><div id="ideas"><span class="sub">Lo iremos llenando.</span></div>
+      <h3>🧱 Mis oraciones</h3><div id="sentences"><span class="sub">Aquí aparecerán las oraciones que construyas.</span></div>
+    </aside>
+  </div>
+
+  <section id="orderPanel" class="card hidden" style="margin-top:14px">
+    <div class="stage">Etapa 12 · Organizo el texto</div>
+    <div class="q">Coloca las oraciones en el orden correcto.</div>
+    <p>Usa ↑ y ↓. Después comprueba tu texto.</p>
+    <div id="orderList"></div>
+    <button class="btn primary" id="checkOrder">Comprobar orden</button>
+    <div class="feedback" id="orderFeedback">Piensa: inicio → desarrollo → final.</div>
+  </section>
+
+  <section id="creative" class="card creative hidden" style="margin-top:14px">
+    <div class="stage">✨ Etapa 13 · Nivel creativo</div>
+    <h2>Ahora soy escritor</h2>
+    <p>Ya aprendiste a encontrar información, construir oraciones, añadir detalles, conectar ideas y organizar un párrafo. Ahora crearás <b>una historia nueva</b>.</p>
+    <div class="plan"><b>Situación creativa:</b> Imagina que un niño o una niña sale a un lugar y ocurre algo inesperado. Tú decides qué sucede.</div>
+    <label>1. ¿Quién será tu personaje?</label><input id="c1">
+    <label>2. ¿Dónde ocurre tu historia?</label><input id="c2">
+    <label>3. ¿Cuándo ocurre?</label><input id="c3" placeholder="Por ejemplo: una mañana, el sábado...">
+    <label>4. ¿Qué sucede primero?</label><input id="c4">
+    <label>5. ¿Qué acontecimiento o problema ocurre?</label><input id="c5">
+    <label>6. ¿Qué hace el personaje?</label><input id="c6">
+    <label>7. ¿Qué sucede después?</label><input id="c7">
+    <label>8. ¿Cómo termina la historia?</label><input id="c8">
+    <button class="btn primary" id="makePlan" style="margin-top:15px">Crear mi plan</button>
+    <div id="creativePlan" class="plan hidden"></div>
+
+    <h3>✍️ Mi historia</h3>
+    <p>Escribe entre 3 y 5 oraciones. Usa tu plan, pero escribe con tus propias palabras.</p>
+    <textarea id="story" rows="8" placeholder="Escribe aquí tu historia..."></textarea>
+
+    <div class="plan check">
+      <h3>🔎 Reviso como escritor</h3>
+      <label><input type="checkbox"> Comencé las oraciones con mayúscula.</label>
+      <label><input type="checkbox"> Escribí ideas completas.</label>
+      <label><input type="checkbox"> Organicé las ideas en orden.</label>
+      <label><input type="checkbox"> Usé conectores cuando los necesitaba.</label>
+      <label><input type="checkbox"> Coloqué puntos.</label>
+      <label><input type="checkbox"> Mi historia tiene inicio, desarrollo y final.</label>
+      <label><input type="checkbox"> Volví a leer mi texto.</label>
+    </div>
+    <button class="btn secondary" onclick="window.print()">🖨️ Imprimir mi trabajo</button>
+  </section>
+
+  <div class="nav">
+    <button id="back" class="btn secondary">← Atrás</button>
+    <button id="restart" class="btn secondary">Reiniciar</button>
+    <button id="next" class="btn primary" disabled>Siguiente →</button>
+  </div>
+</div>
+
+<script>
+const Q=[
+[1,"Leo y descubro","Idea principal","¿De quién habla principalmente la historia?",["Luis","Ana","Sofía","La mamá"],1,"Ana",""],
+[1,"Leo y descubro","Lugar","¿A dónde fue Ana?",["A la escuela","Al parque","A la tienda","A la biblioteca"],1,"parque",""],
+[1,"Leo y descubro","Compañía","¿Con quién fue Ana?",["Con Sofía","Con su hermano Luis","Con su maestra","Sola"],1,"Luis",""],
+[1,"Leo y descubro","Tiempo","¿Cuándo fue Ana al parque?",["El sábado","El lunes","Por la noche","El domingo"],0,"sábado",""],
+[2,"Encuentro información","Personajes","¿A quién encontraron en el parque?",["A Pedro","A Sofía","A la maestra","Al papá"],1,"Sofía",""],
+[2,"Encuentro información","Detalles","¿Qué llevaron Ana y Luis?",["Pelota y botella de agua","Libro y lápiz","Bicicleta y comida","Mochila y juguete"],0,"pelota · agua",""],
+[2,"Encuentro información","Lugar preciso","¿Dónde jugaron?",["Cerca de un árbol","Dentro de una casa","En la escuela","En una tienda"],0,"cerca de un árbol",""],
+[3,"Pienso sobre lo leído","Acción","¿Qué hicieron Ana, Luis y Sofía?",["Estudiaron","Jugaron con una pelota","Cocinaron","Durmieron"],1,"jugaron",""],
+[3,"Pienso sobre lo leído","Causa","¿Por qué se sentaron en el banco?",["Para estudiar","Para descansar y beber agua","Para esconderse","Para esperar un autobús"],1,"descansar · beber agua",""],
+[3,"Pienso sobre lo leído","Resultado","¿Qué ocurrió al final?",["Jugaron otra vez","Ana y Luis regresaron a casa","Llegaron al parque","Encontraron a Sofía"],1,"regresaron a casa",""],
+[4,"Descubro cómo se construye una oración","¿Quién?","¿Quién realiza la acción en la primera idea?",["Ana","El parque","El sábado","La pelota"],0,"",""],
+[4,"Descubro cómo se construye una oración","¿Qué hizo?","¿Qué hizo Ana?",["fue","escribió","durmió","cantó"],0,"",""],
+[4,"Descubro cómo se construye una oración","¿Dónde?","¿A dónde fue?",["con Luis","el sábado","al parque","una pelota"],2,"",""],
+[4,"Descubro cómo se construye una oración","¿Con quién?","¿Con quién fue?",["al parque","con su hermano Luis","con una pelota","cerca del árbol"],1,"",""],
+[4,"Construyo una oración","Idea completa","¿Cuál es la oración completa?",["Ana parque Luis.","Ana fue al parque con su hermano Luis.","Fue parque Ana.","Ana con Luis parque."],1,"","Ana fue al parque con su hermano Luis."],
+[5,"Hago crecer mi oración","Cuándo","¿Qué información añade “El sábado”?",["Quién","Cuándo","Dónde","Qué hizo"],1,"",""],
+[5,"Hago crecer mi oración","Más detalles","¿Qué información añade “con su hermano Luis”?",["Con quién","Cuándo","Por qué","Cómo terminó"],0,"",""],
+[5,"Hago crecer mi oración","Oración enriquecida","¿Cuál oración ofrece más información?",["Ana fue.","Ana fue al parque.","El sábado, Ana fue al parque con su hermano Luis.","Ana y Luis."],2,"","El sábado, Ana fue al parque con su hermano Luis."],
+[6,"Construyo una segunda idea","Personaje + acción","¿Cuál expresa mejor lo que ocurrió con Sofía?",["Sofía pelota jugaron.","Encontraron a Sofía y jugaron con una pelota.","Pelota Sofía parque.","Sofía fue una pelota."],1,"","Encontraron a Sofía y jugaron con una pelota."],
+[7,"Aprendo a conectar ideas","Conector de lugar","Ana fue al parque con Luis. ___ encontraron a Sofía. ¿Qué palabra conecta mejor?",["Nunca","Allí","Porque","Pero"],1,"allí",""],
+[7,"Aprendo a conectar ideas","Conector de secuencia","¿Qué palabra ayuda a indicar que una acción ocurrió más tarde?",["Después","Quién","Parque","Pelota"],0,"después",""],
+[8,"Pongo mis ideas en orden","Primero","¿Qué ocurrió PRIMERO?",["Ana y Luis fueron al parque.","Descansaron.","Regresaron a casa.","Se sentaron."],0,"",""],
+[8,"Pongo mis ideas en orden","Después","¿Qué ocurrió DESPUÉS de llegar?",["Regresaron a casa.","Encontraron a Sofía y jugaron.","Fueron a dormir.","Fueron a la escuela."],1,"",""],
+[8,"Pongo mis ideas en orden","Al final","¿Qué ocurrió AL FINAL?",["Llegaron al parque.","Jugaron.","Regresaron a casa.","Encontraron a Sofía."],2,"",""],
+[9,"Construyo mi párrafo","Inicio","Escoge el mejor comienzo.",["Una pelota roja.","El sábado, Ana fue al parque con su hermano Luis.","Después regresaron.","El parque."],1,"","El sábado, Ana fue al parque con su hermano Luis."],
+[9,"Construyo mi párrafo","Desarrollo","¿Qué oración continúa mejor?",["Allí encontraron a Sofía y jugaron con una pelota.","Ana fue otra vez.","El árbol es verde.","Sofía es una niña."],0,"","Allí encontraron a Sofía y jugaron con una pelota."],
+[9,"Construyo mi párrafo","Desarrollo","¿Qué ocurrió después?",["Después se sentaron en un banco para descansar y beber agua.","Primero regresaron.","Fueron a la escuela.","Compraron un libro."],0,"","Después se sentaron en un banco para descansar y beber agua."],
+[9,"Construyo mi párrafo","Final","Escoge el mejor final.",["Luis tenía agua.","Al final, Ana y Luis regresaron a casa.","El parque tiene árboles.","Sofía jugó."],1,"","Al final, Ana y Luis regresaron a casa."],
+[10,"Organizo antes de escribir","¿Quién?","¿Quiénes son los personajes principales que van juntos al parque?",["Ana y Luis","El árbol y el banco","La mamá y el árbol","La pelota y Sofía"],0,"Ana y Luis",""],
+[10,"Organizo antes de escribir","¿Dónde?","¿Cuál es el lugar principal?",["La escuela","El parque","La casa","La tienda"],1,"parque",""],
+[10,"Organizo antes de escribir","¿Qué hicieron?","¿Qué acción importante realizaron con Sofía?",["Jugaron","Estudiaron","Cocinaron","Leyeron"],0,"jugaron",""],
+[10,"Organizo antes de escribir","¿Qué pasó después?","¿Qué hicieron antes de regresar a casa?",["Descansaron y bebieron agua","Fueron a clases","Compraron ropa","Durmieron"],0,"descansaron",""],
+[11,"Reviso como escritor","Mayúscula","¿Cuál oración comienza correctamente?",["el sábado, Ana fue al parque.","El sábado, Ana fue al parque.","el Sábado, ana fue al parque.","El sábado ana fue al parque"],1,"",""],
+[11,"Reviso como escritor","Punto final","¿Cuál oración termina correctamente?",["Ana regresó a casa","Ana regresó a casa.","Ana regresó a casa,","Ana regresó a casa?"],1,"",""],
+[11,"Reviso como escritor","Coherencia","¿Qué hace que varias oraciones formen un párrafo?",["Que tengan ideas relacionadas y ordenadas.","Que todas sean iguales.","Que no tengan puntos.","Que tengan palabras difíciles."],0,"",""]
+];
+let i=0,solved=new Set(),ideas=[],sentences=[];
+const $=id=>document.getElementById(id);
+function updateBanks(){
+ $("ideas").innerHTML=ideas.length?[...new Set(ideas)].map(x=>`<span class="chip">${x}</span>`).join(""):'<span class="sub">Lo iremos llenando.</span>';
+ $("sentences").innerHTML=sentences.length?[...new Set(sentences)].map(x=>`<div class="sentence">${x}</div>`).join(""):'<span class="sub">Aquí aparecerán las oraciones que construyas.</span>';
+}
+function render(){
+ let q=Q[i]; $("stage").textContent=`Etapa ${q[0]} · ${q[1]}`;$("skill").textContent=q[2];$("question").textContent=q[3];
+ $("options").innerHTML=""; q[4].forEach((o,n)=>{let b=document.createElement("button");b.className="option";b.textContent=o;b.onclick=()=>answer(n,b);$("options").appendChild(b)});
+ $("feedback").textContent=solved.has(i)?"✓ Esta pregunta ya está resuelta.":"Lee, piensa y selecciona la mejor respuesta.";
+ $("next").disabled=!solved.has(i);$("back").disabled=i===0;
+ $("bar").style.width=((i+1)/(Q.length+2)*100)+"%";$("progressText").textContent=`Pregunta ${i+1} de ${Q.length} · Etapa ${q[0]}`;
+ updateBanks();
+}
+function answer(n,b){
+ let q=Q[i]; if(n===q[5]){solved.add(i);[...$("options").children].forEach(x=>x.disabled=true);b.classList.add("correct");
+ $("feedback").textContent="✓ ¡Muy bien! Encontraste una pieza importante.";if(q[6])ideas.push(q[6]);if(q[7])sentences.push(q[7]);$("next").disabled=false;updateBanks();}
+ else{b.classList.add("wrong");$("feedback").textContent="Todavía no. Vuelve al texto, busca una pista y prueba otra vez.";setTimeout(()=>b.classList.remove("wrong"),700)}
+}
+$("next").onclick=()=>{if(!solved.has(i))return;if(i<Q.length-1){i++;render()}else showOrder()};
+$("back").onclick=()=>{if(i>0){i--;render()}};
+$("restart").onclick=()=>location.reload();
+
+const finalSentences=[
+"El sábado, Ana fue al parque con su hermano Luis.",
+"Allí encontraron a Sofía y jugaron con una pelota.",
+"Después se sentaron en un banco para descansar y beber agua.",
+"Al final, Ana y Luis regresaron a casa."
+];
+let order=[2,0,3,1];
+function showOrder(){$("learning").classList.add("hidden");$("reading").classList.add("hidden");$("orderPanel").classList.remove("hidden");$("next").classList.add("hidden");$("back").classList.add("hidden");$("bar").style.width="94%";renderOrder()}
+function renderOrder(){$("orderList").innerHTML="";order.forEach((idx,pos)=>{let d=document.createElement("div");d.className="orderItem";d.innerHTML=`<span>${finalSentences[idx]}</span><button class="mini">↑</button><button class="mini">↓</button>`;let bs=d.querySelectorAll("button");bs[0].onclick=()=>move(pos,-1);bs[1].onclick=()=>move(pos,1);$("orderList").appendChild(d)})}
+function move(pos,dir){let np=pos+dir;if(np<0||np>=order.length)return;[order[pos],order[np]]=[order[np],order[pos]];renderOrder()}
+$("checkOrder").onclick=()=>{if(order.every((v,n)=>v===n)){$("orderFeedback").textContent="✓ ¡Excelente! Organizaste un párrafo con inicio, desarrollo y final.";setTimeout(showCreative,900)}else $("orderFeedback").textContent="Aún no está en el mejor orden. Busca las palabras: El sábado, Allí, Después, Al final."}
+function showCreative(){$("orderPanel").classList.add("hidden");$("creative").classList.remove("hidden");$("bar").style.width="100%";$("progressText").textContent="✨ Nivel creativo · Ahora soy escritor"}
+$("makePlan").onclick=()=>{let vals=[];for(let n=1;n<=8;n++)vals.push($("c"+n).value.trim());if(vals.some(v=>!v)){alert("Completa las 8 partes de tu plan.");return}
+ $("creativePlan").classList.remove("hidden");$("creativePlan").innerHTML=`<h3>🗂️ Plan de mi historia</h3><b>Personaje:</b> ${vals[0]}<br><b>Lugar:</b> ${vals[1]}<br><b>Cuándo:</b> ${vals[2]}<br><b>Primero:</b> ${vals[3]}<br><b>Acontecimiento o problema:</b> ${vals[4]}<br><b>Acción del personaje:</b> ${vals[5]}<br><b>Después:</b> ${vals[6]}<br><b>Final:</b> ${vals[7]}<p><b>Palabras que pueden ayudarte:</b> Primero · Allí · Después · Luego · Porque · Al final</p>`}
+render();
+</script>
+</body>
+</html>
