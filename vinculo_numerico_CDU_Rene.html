@@ -1,0 +1,43 @@
+<!-- Autor: Rene M. Velazquez Avila | © 2026 | Espacio de Aprendizaje — Segundo Grado | Todos los derechos reservados. -->
+<!doctype html><html lang="es"><head>
+<meta name="author" content="Rene M. Velazquez Avila">
+<meta name="copyright" content="© 2026 Rene M. Velazquez Avila. Todos los derechos reservados.">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vínculo numérico CDU</title><style>
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f6f9fd;margin:0;color:#172033}.app{max-width:1100px;margin:auto;padding:20px}
+header{text-align:center;background:#dff3ff;border:3px solid #2563eb;border-radius:18px;padding:15px}h1{margin:0;color:#12336f;font-size:42px}header p{font-size:21px;font-weight:bold;margin:6px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;background:white;margin:16px 0;padding:16px;border-radius:16px;border:2px solid #cbd5e1}
+label{font-size:21px;font-weight:bold}#num{width:160px;height:56px;font-size:30px;text-align:center;font-weight:bold;border:3px solid #94a3b8;border-radius:10px}
+button{padding:14px 20px;border:0;border-radius:10px;font-weight:bold;font-size:17px;cursor:pointer}.show{background:#1769dc;color:white}.clear{background:#e2e8f0}.listen{background:#ffe98d}
+.msg{text-align:center;color:#b91c1c;font-weight:bold;min-height:25px}
+.board{background:white;border:3px solid #315ba6;border-radius:20px;padding:18px}.title{text-align:center;font-size:29px;font-weight:bold;color:#12336f}
+.bond{height:350px;position:relative;max-width:850px;margin:auto}.lines{position:absolute;width:100%;height:100%;z-index:0}
+.node{position:absolute;border:4px solid #1f2937;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;z-index:2}
+.whole{width:140px;height:140px;left:50%;top:15px;transform:translateX(-50%);font-size:40px;background:#d8f3ff;color:#123b8f}
+.part{width:125px;height:125px;top:205px;font-size:32px}.h{left:9%;background:#ffe0e0;color:#dc2626}.t{left:50%;transform:translateX(-50%);background:#ddf7dd;color:#168238}.o{right:9%;background:#fff1a8;color:#9a6200}
+.lab{position:absolute;top:330px;font-size:18px;font-weight:bold;text-align:center}.lh{left:7%;width:140px}.lt{left:50%;width:140px;transform:translateX(-50%)}.lo{right:7%;width:140px}
+.practice{margin-top:40px;background:#edf7ff;border:2px solid #72a8e8;border-radius:16px;padding:17px;text-align:center}.practice h2{color:#12336f}
+.sentence{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:21px;font-weight:bold}.ans{width:75px;height:50px;font-size:26px;text-align:center;font-weight:bold;border:3px solid #7b8798;border-radius:8px}
+.check{background:#168238;color:white;margin-top:14px}.feedback{min-height:30px;margin:10px;font-size:20px;font-weight:bold}.expanded{max-width:600px;margin:auto;background:#e4f8dd;border:3px solid #42a94e;border-radius:12px;padding:12px;font-size:28px;font-weight:bold}
+@media(max-width:650px){h1{font-size:32px}.whole{width:110px;height:110px;font-size:30px}.part{width:90px;height:90px;top:200px;font-size:24px}.h{left:3%}.o{right:3%}.lab{top:294px;font-size:14px}.lh{left:0}.lo{right:0}.bond{height:315px}.practice{margin-top:25px}}
+</style></head><body><main class="app"><header><h1>🔗 Vínculo numérico</h1><p>Descompongo un número en partes que se suman</p></header>
+<div class="controls"><label>Escribe un número:</label><input id="num" type="number" min="0" max="999" placeholder="416"><button class="show" onclick="showNum()">MOSTRAR</button><button class="clear" onclick="resetAll()">BORRAR</button><button class="listen" onclick="speak()">🔊 ESCUCHAR</button></div><div id="msg" class="msg"></div>
+<section class="board"><div id="title" class="title">Escribe un número para formar su vínculo</div><div class="bond">
+<svg class="lines" viewBox="0 0 850 350" preserveAspectRatio="none"><line x1="425" y1="135" x2="140" y2="245" stroke="#253044" stroke-width="5"/><line x1="425" y1="135" x2="425" y2="245" stroke="#253044" stroke-width="5"/><line x1="425" y1="135" x2="710" y2="245" stroke="#253044" stroke-width="5"/></svg>
+<div id="whole" class="node whole">?</div><div id="hv" class="node part h">?</div><div id="tv" class="node part t">?</div><div id="ov" class="node part o">?</div>
+</div>
+<div style="text-align:center;margin:8px auto 16px;font-size:19px;font-weight:800;color:#334155;">
+El vínculo muestra los <span style="color:#123b78">valores que se suman</span> para formar el número.
+</div><div class="practice"><h2>✏️ Ahora escribe la forma unitaria</h2>
+<div style="margin:-4px 0 12px;color:#475569;font-size:16px;font-weight:700;">
+Aquí sí indicamos cuántas centenas, decenas y unidades tiene el número.
+</div><div class="sentence"><input id="ah" class="ans" type="number"><span>centenas,</span><input id="at" class="ans" type="number"><span>decenas y</span><input id="ao" class="ans" type="number"><span>unidades.</span></div><button class="check" onclick="check()">COMPROBAR</button><div id="feedback" class="feedback"></div><div id="expanded" class="expanded">—</div></div></section></main>
+<script>
+let n=null,h=0,t=0,o=0;const E=id=>document.getElementById(id);
+function showNum(){let r=E("num").value;n=Number(r);if(r===""||!Number.isInteger(n)||n<0||n>999){E("msg").textContent="Escribe un número entero entre 0 y 999.";return}E("msg").textContent="";h=Math.floor(n/100);t=Math.floor((n%100)/10);o=n%10;E("title").textContent="Vínculo numérico del "+n;E("whole").textContent=n;E("hv").textContent=h*100;E("tv").textContent=t*10;E("ov").textContent=o;E("expanded").textContent=n+" = "+h*100+" + "+t*10+" + "+o;["ah","at","ao"].forEach(x=>E(x).value="");E("feedback").textContent=""}
+function check(){if(n===null){E("msg").textContent="Primero escribe un número y presiona MOSTRAR.";return}if(E("ah").value===""||E("at").value===""||E("ao").value===""){E("feedback").textContent="Completa las tres casillas.";return}let ok=+E("ah").value===h&&+E("at").value===t&&+E("ao").value===o;E("feedback").textContent=ok?"⭐ ¡Excelente! Formaste correctamente el número.":"🔎 Revisa el vínculo y vuelve a intentarlo.";E("feedback").style.color=ok?"#168238":"#b45309"}
+function resetAll(){n=null;E("num").value="";E("title").textContent="Escribe un número para formar su vínculo";["whole","hv","tv","ov"].forEach(x=>E(x).textContent="?");["ah","at","ao"].forEach(x=>E(x).value="");E("expanded").textContent="—";E("feedback").textContent="";E("msg").textContent=""}
+function speak(){if(n===null){E("msg").textContent="Primero escribe un número y presiona MOSTRAR.";return}speechSynthesis.cancel();let u=new SpeechSynthesisUtterance("Número "+n+". Su vínculo numérico es "+h*100+", "+t*10+" y "+o+". Forma unitaria: "+h+" centenas, "+t+" decenas y "+o+" unidades.");u.lang="es-US";u.rate=.82;speechSynthesis.speak(u)}
+E("num").addEventListener("keydown",e=>{if(e.key==="Enter")showNum()});
+</script><footer style="max-width:1180px;margin:22px auto 12px;padding:16px;text-align:center;border-top:1px solid #cbd5e1;color:#475569;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;">© 2026 Rene M. Velazquez Avila · Espacio de Aprendizaje — Segundo Grado · Todos los derechos reservados.</footer>
+</body></html>

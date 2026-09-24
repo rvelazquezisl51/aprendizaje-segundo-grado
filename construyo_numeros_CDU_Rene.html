@@ -1,0 +1,188 @@
+<!-- Autor: Rene M. Velazquez Avila | © 2026 | Espacio de Aprendizaje — Segundo Grado | Todos los derechos reservados. -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta name="author" content="Rene M. Velazquez Avila">
+<meta name="copyright" content="© 2026 Rene M. Velazquez Avila. Todos los derechos reservados.">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construyo números | Centenas, decenas y unidades</title>
+<style>
+:root{
+  --blue:#2563eb; --blue-soft:#dbeafe;
+  --green:#16a34a; --green-soft:#dcfce7;
+  --yellow:#d97706; --yellow-soft:#fef3c7;
+  --ink:#172033; --muted:#64748b; --bg:#f7f9fc;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink);
+}
+.app{max-width:1180px;margin:auto;padding:22px}
+h1{text-align:center;margin:4px 0 6px;font-size:clamp(28px,4vw,46px)}
+.subtitle{text-align:center;color:var(--muted);font-size:20px;margin-bottom:22px}
+.controls{
+  background:#fff;border:2px solid #dbe2ea;border-radius:20px;padding:18px;
+  display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;
+  box-shadow:0 5px 16px rgba(15,23,42,.07)
+}
+label{font-size:22px;font-weight:700}
+input{
+  width:170px;height:58px;border:3px solid #94a3b8;border-radius:12px;
+  font-size:32px;text-align:center;font-weight:800
+}
+button{
+  min-height:54px;border:0;border-radius:12px;padding:0 22px;font-size:18px;
+  font-weight:800;cursor:pointer
+}
+.show{background:#1d4ed8;color:#fff}.reset{background:#e2e8f0;color:#172033}
+.sound{background:#fff3c4;color:#5b4300;border:2px solid #f0c94f}
+.message{text-align:center;min-height:28px;margin:12px 0 4px;font-size:18px;font-weight:700;color:#b91c1c}
+.place-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.place{
+  background:#fff;border-radius:20px;overflow:hidden;border:3px solid;
+  min-height:360px;display:flex;flex-direction:column
+}
+.place.h{border-color:var(--blue)} .place.t{border-color:var(--green)} .place.o{border-color:var(--yellow)}
+.place-head{text-align:center;padding:13px 8px;font-size:25px;font-weight:900}
+.h .place-head{background:var(--blue-soft);color:#1746a2}
+.t .place-head{background:var(--green-soft);color:#117033}
+.o .place-head{background:var(--yellow-soft);color:#9a5200}
+.big-digit{text-align:center;font-size:46px;font-weight:900;padding:8px 0 2px}
+.objects{
+  flex:1;padding:16px;display:flex;align-content:flex-start;justify-content:center;
+  align-items:flex-start;gap:12px;flex-wrap:wrap
+}
+.value{text-align:center;font-size:28px;font-weight:900;padding:12px;border-top:2px solid #e5e7eb}
+.bundle100{
+  width:74px;height:92px;border:3px solid #9a6700;border-radius:8px;
+  background:repeating-linear-gradient(90deg,#f7c84b 0 3px,#e7a91d 3px 5px);
+  position:relative;box-shadow:2px 3px 0 #d39a17
+}
+.bundle100:after,.bundle10:after{
+  content:"";position:absolute;left:-3px;right:-3px;top:45%;
+  height:7px;background:#e85d5d;border-top:1px solid #a92727;border-bottom:1px solid #a92727
+}
+.bundle10{
+  width:35px;height:92px;border:3px solid #9a6700;border-radius:7px;
+  background:repeating-linear-gradient(90deg,#f7c84b 0 3px,#e7a91d 3px 5px);
+  position:relative;box-shadow:2px 3px 0 #d39a17
+}
+.stick{
+  width:10px;height:92px;border:2px solid #8a5c00;border-radius:5px;
+  background:linear-gradient(90deg,#ffd66a,#efb62c)
+}
+.explain{
+  margin-top:18px;background:#fff;border:2px solid #dbe2ea;border-radius:20px;
+  padding:18px;text-align:center;box-shadow:0 5px 16px rgba(15,23,42,.06)
+}
+.number-display{font-size:clamp(30px,5vw,48px);font-weight:900;margin-bottom:10px}
+.expanded{font-size:clamp(25px,4vw,38px);font-weight:900}
+.words{font-size:22px;margin-top:10px;font-weight:700;color:#475569}
+.legend{
+  display:flex;justify-content:center;gap:25px;flex-wrap:wrap;margin-top:14px;
+  color:#475569;font-size:16px;font-weight:700
+}
+@media(max-width:760px){
+  .place-grid{grid-template-columns:1fr}.place{min-height:300px}
+  .app{padding:12px}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <h1>🔢 Construyo números</h1>
+  <div class="subtitle">Centenas · Decenas · Unidades</div>
+
+  <section class="controls">
+    <label for="number">Escribe un número:</label>
+    <input id="number" type="number" min="0" max="999" inputmode="numeric" placeholder="245">
+    <button class="show" id="show">MOSTRAR</button>
+    <button class="reset" id="reset">BORRAR</button>
+    <button class="sound" id="sound">🔊 ESCUCHAR</button>
+  </section>
+  <div class="message" id="message"></div>
+
+  <section class="place-grid">
+    <article class="place h">
+      <div class="place-head">CENTENAS</div>
+      <div class="big-digit" id="hd">0</div>
+      <div class="objects" id="hundreds"></div>
+      <div class="value" id="hv">0</div>
+    </article>
+    <article class="place t">
+      <div class="place-head">DECENAS</div>
+      <div class="big-digit" id="td">0</div>
+      <div class="objects" id="tens"></div>
+      <div class="value" id="tv">0</div>
+    </article>
+    <article class="place o">
+      <div class="place-head">UNIDADES</div>
+      <div class="big-digit" id="od">0</div>
+      <div class="objects" id="ones"></div>
+      <div class="value" id="ov">0</div>
+    </article>
+  </section>
+
+  <section class="explain">
+    <div class="number-display" id="full">Escribe un número y presiona MOSTRAR</div>
+    <div class="expanded" id="expanded">—</div>
+    <div class="words" id="words">Cada paquete grande representa 100, cada paquete pequeño representa 10 y cada palito representa 1.</div>
+  </section>
+  <div class="legend">
+    <span>🟦 Centena = 100</span><span>🟩 Decena = 10</span><span>🟨 Unidad = 1</span>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let current = null;
+
+function addObjects(id, count, cls){
+  const box=$(id); box.innerHTML="";
+  for(let i=0;i<count;i++){ const el=document.createElement("div"); el.className=cls; box.appendChild(el); }
+}
+function plural(n,sing,plur){return n===1?sing:plur}
+
+function render(){
+  const raw=$("number").value.trim();
+  const n=Number(raw);
+  if(raw==="" || !Number.isInteger(n) || n<0 || n>999){
+    $("message").textContent="Escribe un número entero entre 0 y 999.";
+    return;
+  }
+  $("message").textContent="";
+  current=n;
+  const h=Math.floor(n/100), t=Math.floor((n%100)/10), o=n%10;
+  $("hd").textContent=h; $("td").textContent=t; $("od").textContent=o;
+  $("hv").textContent=h*100; $("tv").textContent=t*10; $("ov").textContent=o;
+  addObjects("hundreds",h,"bundle100"); addObjects("tens",t,"bundle10"); addObjects("ones",o,"stick");
+  $("full").textContent=n;
+  $("expanded").textContent=`${h*100} + ${t*10} + ${o} = ${n}`;
+  $("words").textContent=`${h} ${plural(h,"centena","centenas")} + ${t} ${plural(t,"decena","decenas")} + ${o} ${plural(o,"unidad","unidades")} = ${n}`;
+}
+function resetAll(){
+  $("number").value=""; current=null; $("message").textContent="";
+  ["hundreds","tens","ones"].forEach(x=>$(x).innerHTML="");
+  ["hd","td","od","hv","tv","ov"].forEach(x=>$(x).textContent="0");
+  $("full").textContent="Escribe un número y presiona MOSTRAR";
+  $("expanded").textContent="—";
+  $("words").textContent="Cada paquete grande representa 100, cada paquete pequeño representa 10 y cada palito representa 1.";
+  $("number").focus();
+}
+function speak(){
+  if(current===null){ $("message").textContent="Primero escribe un número y presiona MOSTRAR."; return; }
+  const n=current,h=Math.floor(n/100),t=Math.floor((n%100)/10),o=n%10;
+  const text=`Número ${n}. ${h} ${plural(h,"centena","centenas")}, ${t} ${plural(t,"decena","decenas")} y ${o} ${plural(o,"unidad","unidades")}.`;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text); u.lang="es-US"; u.rate=.82; speechSynthesis.speak(u);
+}
+$("show").addEventListener("click",render);
+$("reset").addEventListener("click",resetAll);
+$("sound").addEventListener("click",speak);
+$("number").addEventListener("keydown",e=>{if(e.key==="Enter")render()});
+</script>
+<footer style="max-width:1180px;margin:22px auto 12px;padding:16px;text-align:center;border-top:1px solid #cbd5e1;color:#475569;font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;">© 2026 Rene M. Velazquez Avila · Espacio de Aprendizaje — Segundo Grado · Todos los derechos reservados.</footer>
+</body>
+</html>
