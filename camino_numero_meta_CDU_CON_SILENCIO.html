@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Rene M. Velazquez Avila">
+<meta name="copyright" content="© 2026 Rene M. Velazquez Avila">
+<title>Camino al número meta | C-D-U</title>
+<style>
+:root{--b:#173b72;--line:#9aa7b8;--u:#fff4c7;--d:#e4f7e5;--c:#e2edff;--bg:#f6f9fd}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#172033}.app{max-width:1050px;margin:auto;padding:18px}
+header{text-align:center;background:#e4f3ff;border:3px solid #3770ca;border-radius:18px;padding:14px}h1{margin:0;color:var(--b);font-size:clamp(28px,5vw,45px)}header p{font-size:19px;font-weight:bold;margin:6px}
+.controls{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;background:white;border:2px solid #cbd5e1;border-radius:16px;padding:15px;margin:15px 0}
+.controls label{font-weight:bold;font-size:19px}.controls input{width:120px;height:52px;text-align:center;font-size:27px;font-weight:bold;border:3px solid #94a3b8;border-radius:9px}
+button{border:0;border-radius:10px;padding:14px 20px;font-size:17px;font-weight:bold;cursor:pointer}.go{background:#1769dc;color:white}.clear{background:#e2e8f0}.sound{background:#ffec9d}.stop{background:#dc2626;color:white}.msg{text-align:center;color:#b91c1c;font-weight:bold;min-height:24px}
+.card{background:white;border:3px solid #315ba6;border-radius:18px;padding:18px}.question{text-align:center;font-size:27px;font-weight:900;color:var(--b);margin-bottom:6px}
+.rule{text-align:center;font-size:17px;font-weight:bold;color:#475569;margin-bottom:15px}
+.legend{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.tag{padding:8px 13px;border-radius:9px;font-weight:bold}.tu{background:var(--u)}.td{background:var(--d)}.tc{background:var(--c)}
+table{border-collapse:collapse;margin:auto;width:min(650px,100%);font-size:22px;font-weight:bold;text-align:center}th,td{border:2px solid #718096;padding:9px}th{background:#dceaff;color:#173b72}.row-u{background:var(--u)}.row-d{background:var(--d)}.row-c{background:var(--c)}
+.phase{font-size:14px;text-align:left;font-weight:900}.summary{margin:18px auto 0;max-width:780px;background:#f8fafc;border:2px solid #cbd5e1;border-radius:14px;padding:15px;text-align:center}
+.summary h2{margin:0 0 10px;color:var(--b);font-size:23px}.path{font-size:27px;font-weight:900;line-height:1.5}.steps{font-size:18px;font-weight:bold;color:#475569;margin-top:8px}
+.practice{margin-top:15px;background:#edf7ff;border:2px solid #79a9df;border-radius:14px;padding:14px;text-align:center}.practice h2{margin:0 0 7px;color:var(--b)}.practice p{margin:4px;font-size:17px;font-weight:bold}
+footer{text-align:center;margin-top:20px;border-top:1px solid #cbd5e1;padding:14px;color:#64748b;font-size:13px;font-weight:bold}
+@media(max-width:650px){table{font-size:18px}th,td{padding:7px}.phase{font-size:11px}.path{font-size:21px}}
+</style></head>
+<body>
+<!-- Autor: Rene M. Velazquez Avila | © 2026 -->
+<main class="app">
+<header><h1>🎯 Camino al número meta</h1><p>Observo cómo cambian centenas, decenas y unidades</p></header>
+<section class="controls">
+<label>Desde:</label><input id="start" type="number" min="100" max="999" value="126">
+<label>Hasta:</label><input id="target" type="number" min="100" max="999" value="400">
+<button class="go" onclick="build()">CONSTRUIR</button><button class="clear" onclick="resetAll()">BORRAR</button><button class="sound" onclick="speak()">🔊 ESCUCHAR</button><button class="stop" onclick="stopVoice()">🔇 SILENCIO</button>
+</section><div class="msg" id="msg"></div>
+<section class="card">
+<div class="question" id="question">126 → 400</div>
+<div class="rule">Primero completo la decena. Después completo la centena. Finalmente avanzo por centenas hasta la meta.</div>
+<div class="legend"><span class="tag tu">1️⃣ De 1 en 1</span><span class="tag td">2️⃣ De 10 en 10</span><span class="tag tc">3️⃣ De 100 en 100</span></div>
+<div id="table"></div>
+<div class="summary"><h2>La estrategia abreviada</h2><div class="path" id="path">126 → 130 → 200 → 400</div><div class="steps" id="steps">+4 &nbsp;&nbsp; | &nbsp;&nbsp; +70 &nbsp;&nbsp; | &nbsp;&nbsp; +200</div></div>
+<div class="practice"><h2>👀 ¿Qué debo observar?</h2><p>Cuando llego a una decena completa, las unidades quedan en 0.</p><p>Cuando llego a una centena completa, decenas y unidades quedan en 0.</p></div>
+</section>
+<footer>© 2026 Rene M. Velazquez Avila · Espacio de Aprendizaje — Segundo Grado · Todos los derechos reservados.</footer>
+</main>
+<script>
+const E=id=>document.getElementById(id); let seq=[], landmarks=[];
+function digits(n){return [Math.floor(n/100)%10,Math.floor(n/10)%10,n%10]}
+function build(){
+ let a=+E("start").value,b=+E("target").value;E("msg").textContent="";
+ if(!Number.isInteger(a)||!Number.isInteger(b)||a<100||b>999||a>=b){E("msg").textContent="Usa números de tres cifras y una meta mayor que el número inicial.";return}
+ if(b%100!==0){E("msg").textContent="Para esta primera versión, la meta debe ser una centena completa: 200, 300, 400...";return}
+ seq=[];let n=a;
+ let nextTen=Math.ceil(n/10)*10;if(nextTen===n)nextTen=n;
+ while(n<nextTen&&n<b){seq.push([n,"u"]);n++} if(seq.length===0||seq[seq.length-1][0]!==n)seq.push([n,"u"]);
+ let tenMark=n;
+ let nextHundred=Math.ceil(n/100)*100;if(nextHundred===n)nextHundred=n;
+ while(n<nextHundred&&n<b){n+=10;if(n>b)n=b;seq.push([n,"d"])}
+ let hundredMark=n;
+ while(n<b){n+=100;if(n>b)n=b;seq.push([n,"c"])}
+ let rows='<table><thead><tr><th>Paso</th><th>Centenas</th><th>Decenas</th><th>Unidades</th><th>Número</th></tr></thead><tbody>';
+ let lastPhase="";
+ seq.forEach(([x,p])=>{let [c,d,u]=digits(x),label=p==="u"?"UNIDADES":p==="d"?"DECENAS":"CENTENAS";let cls="row-"+p;
+ let show=label===lastPhase?"":label;lastPhase=label;rows+=`<tr class="${cls}"><td class="phase">${show}</td><td>${c}</td><td>${d}</td><td>${u}</td><td>${x}</td></tr>`});
+ rows+="</tbody></table>";E("table").innerHTML=rows;E("question").textContent=a+" → "+b;
+ let marks=[a]; if(tenMark>a)marks.push(tenMark); if(hundredMark>marks[marks.length-1])marks.push(hundredMark); if(b!==marks[marks.length-1])marks.push(b);
+ E("path").textContent=marks.join(" → ");
+ E("steps").textContent=marks.slice(1).map((x,i)=>"+"+(x-marks[i])).join("     |     ");
+ landmarks=marks;
+}
+function resetAll(){E("start").value="126";E("target").value="400";build()}
+let voiceToken=0;
+function stopVoice(){
+  // Invalida cualquier grupo pendiente y cancela inmediatamente la voz activa.
+  voiceToken++;
+  speechSynthesis.cancel();
+}
+function speak(){
+  // Si se pulsa ESCUCHAR otra vez, primero se detiene cualquier lectura anterior.
+  stopVoice();
+ if(!seq.length)build(); if(!seq.length)return;
+ const token=voiceToken;
+ const nums=seq.map(x=>x[0]);
+ const groups=[];
+ for(let i=0;i<nums.length;i+=3) groups.push(nums.slice(i,i+3));
+
+ let i=0;
+ function nextGroup(){
+   if(token!==voiceToken || i>=groups.length) return;
+   // Una sola locución por grupo. El siguiente grupo NO se crea
+   // hasta después de terminar este y completar la pausa.
+   const text=groups[i].join(" ... ");
+   const u=new SpeechSynthesisUtterance(text);
+   u.lang="es-US";
+   u.rate=.62;
+   u.pitch=1;
+   u.onend=()=>{
+      i++;
+      if(i<groups.length && token===voiceToken){
+         setTimeout(nextGroup,1400);
+      }
+   };
+   u.onerror=()=>{};
+   speechSynthesis.speak(u);
+ }
+ nextGroup();
+}
+build();
+</script></body></html>
