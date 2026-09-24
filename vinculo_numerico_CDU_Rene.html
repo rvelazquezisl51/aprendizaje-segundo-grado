@@ -20,7 +20,11 @@ button{padding:14px 20px;border:0;border-radius:10px;font-weight:bold;font-size:
 .sentence{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:21px;font-weight:bold}.ans{width:75px;height:50px;font-size:26px;text-align:center;font-weight:bold;border:3px solid #7b8798;border-radius:8px}
 .check{background:#168238;color:white;margin-top:14px}.feedback{min-height:30px;margin:10px;font-size:20px;font-weight:bold}.expanded{max-width:600px;margin:auto;background:#e4f8dd;border:3px solid #42a94e;border-radius:12px;padding:12px;font-size:28px;font-weight:bold}
 @media(max-width:650px){h1{font-size:32px}.whole{width:110px;height:110px;font-size:30px}.part{width:90px;height:90px;top:200px;font-size:24px}.h{left:3%}.o{right:3%}.lab{top:294px;font-size:14px}.lh{left:0}.lo{right:0}.bond{height:315px}.practice{margin-top:25px}}
-</style></head><body><main class="app"><header><h1>🔗 Vínculo numérico</h1><p>Descompongo un número en partes que se suman</p></header>
+</style></head><body> 
+  <a href="index.html" style="position:fixed;top:15px;left:15px;z-index:9999;background:#173b72;color:white;text-decoration:none;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;padding:12px 18px;border-radius:12px;box-shadow:0 3px 8px rgba(0,0,0,.25);">
+🏠 Menú principal
+</a>
+<main class="app"><header><h1>🔗 Vínculo numérico</h1><p>Descompongo un número en partes que se suman</p></header>
 <div class="controls"><label>Escribe un número:</label><input id="num" type="number" min="0" max="999" placeholder="416"><button class="show" onclick="showNum()">MOSTRAR</button><button class="clear" onclick="resetAll()">BORRAR</button><button class="listen" onclick="speak()">🔊 ESCUCHAR</button></div><div id="msg" class="msg"></div>
 <section class="board"><div id="title" class="title">Escribe un número para formar su vínculo</div><div class="bond">
 <svg class="lines" viewBox="0 0 850 350" preserveAspectRatio="none"><line x1="425" y1="135" x2="140" y2="245" stroke="#253044" stroke-width="5"/><line x1="425" y1="135" x2="425" y2="245" stroke="#253044" stroke-width="5"/><line x1="425" y1="135" x2="710" y2="245" stroke="#253044" stroke-width="5"/></svg>
