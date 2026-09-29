@@ -1,0 +1,63 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="Rene M. Velazquez Avila"><meta name="copyright" content="© 2026 Rene M. Velazquez Avila">
+<title>Represento el número</title><style>
+*{box-sizing:border-box}body{margin:0;background:#f4f8fc;font-family:Arial,sans-serif;color:#172033}main{max-width:1100px;margin:auto;padding:18px}
+header{text-align:center;background:#e6f3ff;border:3px solid #3774c7;border-radius:18px;padding:14px}h1{margin:0;color:#173b72;font-size:40px}header p{font-size:18px;font-weight:bold}
+.controls{margin:14px 0;padding:13px;background:white;border:2px solid #cbd5e1;border-radius:15px;display:flex;gap:9px;justify-content:center;align-items:center;flex-wrap:wrap}
+.controls input{width:125px;height:50px;text-align:center;font-size:27px;font-weight:bold;border:3px solid #94a3b8;border-radius:9px}
+button{border:0;border-radius:9px;padding:12px 16px;font-size:16px;font-weight:bold;cursor:pointer}.blue{background:#1769dc;color:white}.purple{background:#6d3bb4;color:white}.gray{background:#e2e8f0}.green{background:#17833d;color:white}.yellow{background:#ffdf76}.menu{display:inline-block;background:#173b72;color:white;text-decoration:none;border-radius:10px;padding:13px 18px;font-size:16px;font-weight:bold}
+.workspace{background:white;border:3px solid #315ba6;border-radius:18px;padding:17px}.prompt{text-align:center;font-size:25px;font-weight:bold;color:#173b72}.hint{text-align:center;font-weight:bold;color:#64748b;margin:5px 0 12px}
+.blocks{display:flex;justify-content:center;align-items:flex-end;gap:22px;flex-wrap:wrap;min-height:240px;padding:14px;border:2px dashed #cbd5e1;border-radius:14px;background:#fffdf8}
+.group{text-align:center}.items{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;max-width:560px}.label{font-weight:bold;color:#475569;margin-top:7px}
+.h100{width:61px;height:105px;border:3px solid #6d4b19;border-radius:10px;background:repeating-linear-gradient(90deg,#ffe8a0 0 5px,#8a6225 5px 7px);position:relative}
+.h100:after,.t10:after{content:"";position:absolute;left:-3px;right:-3px;top:48%;height:7px;background:#2580ad;border:2px solid #164e6b}
+.t10{width:26px;height:99px;border:3px solid #6d4b19;border-radius:9px;background:repeating-linear-gradient(90deg,#ffe8a0 0 5px,#8a6225 5px 7px);position:relative}
+.o1{width:13px;height:94px;border:2px solid #76531d;border-radius:7px;background:linear-gradient(90deg,#f8d783,#fff0b8,#e6ad4f)}
+.forms{margin-top:16px}.row{display:grid;grid-template-columns:195px 1fr 70px;gap:9px;align-items:center;border-bottom:1px solid #d8dee8;padding:8px}.row label{font-size:20px;font-weight:bold}
+.ans{height:48px;border:2px solid #8b96a6;border-radius:8px;padding:7px 11px;font-size:20px;font-weight:bold;color:#7c3fb1;width:100%}.feedback{text-align:center;min-height:30px;margin-top:12px;font-size:21px;font-weight:bold}.actions{text-align:center;margin-top:12px;display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+.note{margin-top:13px;background:#edf7ff;border:2px solid #79a9df;border-radius:12px;padding:11px;text-align:center;font-weight:bold}
+footer{text-align:center;margin-top:18px;padding:13px;border-top:1px solid #cbd5e1;color:#64748b;font-size:13px;font-weight:bold}
+@media(max-width:650px){.row{grid-template-columns:1fr}.row button{width:100%}h1{font-size:31px}}
+</style></head><body><!-- Autor: Rene M. Velazquez Avila | © 2026 -->
+<main><header><h1>🧮 Represento el número</h1><p>Observo los bloques y escribo el número de cuatro formas.</p></header>
+<div class="controls"><b>Número:</b><input id="num" type="number" min="100" max="999" value="817"><button class="blue" onclick="make()">REPRESENTAR</button><button class="purple" onclick="randomN()">🎲 OTRO NÚMERO</button><button class="gray" onclick="clearA()">BORRAR</button></div>
+<section class="workspace"><div class="prompt">Observa la representación.</div><div class="hint">Cuenta centenas, decenas y unidades.</div>
+<div class="blocks"><div class="group"><div class="items" id="hs"></div><div class="label">CENTENAS</div></div><div class="group"><div class="items" id="ts"></div><div class="label">DECENAS</div></div><div class="group"><div class="items" id="os"></div><div class="label">UNIDADES</div></div></div>
+<div class="forms">
+<div class="row"><label>1. Forma estándar:</label><input class="ans" id="standard" placeholder="Escribe el número"><button onclick="reveal('standard')">VER</button></div>
+<div class="row"><label>2. Forma escrita:</label><input class="ans" id="written" placeholder="Escribe el número con palabras"><button onclick="reveal('written')">VER</button></div>
+<div class="row"><label>3. Forma unitaria:</label><input class="ans" id="unit" placeholder="Ej.: 8 centenas, 1 decena y 7 unidades"><button onclick="reveal('unit')">VER</button></div>
+<div class="row"><label>4. Forma desarrollada:</label><input class="ans" id="expanded" placeholder="Ej.: 800 + 10 + 7"><button onclick="reveal('expanded')">VER</button></div>
+</div><div class="actions"><button class="green" onclick="check()">✓ COMPROBAR TODO</button><button class="yellow" onclick="showAll()">👁 MOSTRAR RESPUESTAS</button></div><div id="fb" class="feedback"></div>
+<div class="note">Forma estándar = número · Forma escrita = palabras · Forma unitaria = centenas, decenas y unidades · Forma desarrollada = valor de cada cifra.</div></section>
+<div style="text-align:center;margin-top:18px">
+<a class="menu" href="index.html">🏠 REGRESAR AL MENÚ PRINCIPAL</a>
+</div><footer>© 2026 Rene M. Velazquez Avila · Espacio de Aprendizaje — Segundo Grado · Todos los derechos reservados.</footer></main>
+<script>
+let cur=817,E=id=>document.getElementById(id);
+const one=["","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez","once","doce","trece","catorce","quince","dieciséis","diecisiete","dieciocho","diecinueve","veinte","veintiuno","veintidós","veintitrés","veinticuatro","veinticinco","veintiséis","veintisiete","veintiocho","veintinueve"],ten=["","","","treinta","cuarenta","cincuenta","sesenta","setenta","ochenta","noventa"],hun=["","ciento","doscientos","trescientos","cuatrocientos","quinientos","seiscientos","setecientos","ochocientos","novecientos"];
+function words(n){
+ let h=Math.floor(n/100), r=n%100, x="";
+ if(n===100)return "cien";
+ if(h>0)x=hun[h];
+ if(r===0)return x;
+ let tail="";
+ if(r<30){
+   tail=one[r];
+ }else{
+   let d=Math.floor(r/10), u=r%10;
+   tail=ten[d]+(u ? " y "+one[u] : "");
+ }
+ return (x+" "+tail).trim();
+}
+function data(){let h=Math.floor(cur/100),t=Math.floor(cur%100/10),o=cur%10;return{h,t,o,standard:""+cur,written:words(cur),unit:`${h} ${h==1?"centena":"centenas"}, ${t} ${t==1?"decena":"decenas"} y ${o} ${o==1?"unidad":"unidades"}`,expanded:[h*100,t*10,o].filter(v=>v>0).join(" + ")}}
+function draw(){let d=data();E("hs").innerHTML='<div class="h100"></div>'.repeat(d.h);E("ts").innerHTML='<div class="t10"></div>'.repeat(d.t);E("os").innerHTML='<div class="o1"></div>'.repeat(d.o)}
+function make(){let n=+E("num").value;if(!Number.isInteger(n)||n<100||n>999){E("fb").textContent="Escribe un número entre 100 y 999.";return}cur=n;clearA();draw()}
+function randomN(){cur=Math.floor(Math.random()*900)+100;E("num").value=cur;clearA();draw()}
+function clearA(){["standard","written","unit","expanded"].forEach(x=>{E(x).value="";E(x).style.background=""});E("fb").textContent=""}
+function reveal(x){E(x).value=data()[x];E(x).style.background="#fff7d6"}
+function showAll(){["standard","written","unit","expanded"].forEach(reveal)}
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[.,]/g,"").replace(/\s+/g," ").trim()}
+function check(){let d=data(),k=0;["standard","written","unit","expanded"].forEach(x=>{let ok=norm(E(x).value)==norm(d[x]);E(x).style.background=ok?"#e8f7e8":"#fff0ee";if(ok)k++});E("fb").textContent=k==4?"⭐ ¡Excelente! Las cuatro formas son correctas.":`Tienes ${k} de 4 correctas. Revisa y vuelve a intentarlo.`;E("fb").style.color=k==4?"#15803d":"#b45309"}
+draw();
+</script></body></html>
