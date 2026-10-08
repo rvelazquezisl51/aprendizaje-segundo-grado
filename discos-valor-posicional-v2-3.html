@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Discos de Valor Posicional V2.3</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#eef7ff;color:#15324e}
+button,input{font:inherit} button{cursor:pointer}.hidden{display:none!important}
+header{height:64px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;box-shadow:0 2px 10px #0001}
+.brand{font-weight:900;font-size:20px}.top{display:flex;gap:8px}.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:900;background:#e7eef5;color:#15324e}
+.btn.dark{background:#15324e;color:#fff}.btn.orange{background:#ffe1bd}.btn.green{background:#198754;color:#fff}
+main{max-width:1120px;margin:auto;padding:18px}.card{background:#fff;border-radius:22px;padding:22px;box-shadow:0 8px 24px #17406b18}
+.cover{text-align:center}.cover h1{font-size:40px;margin:20px 0 8px}.cover p{font-size:20px}.sample{display:flex;gap:16px;justify-content:center;margin:20px}
+.disk{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:20px;box-shadow:inset 0 -7px #0002,0 4px 9px #0002;user-select:none}
+.h{background:#2474d8}.t{background:#21a85b}.o{background:#f68a1b}.sample .disk{width:82px;height:82px;font-size:25px}
+.startrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:12px}.startrow input{min-width:260px;padding:13px;border:2px solid #a8c3db;border-radius:12px;color:#15324e;background:#fff}
+.status{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center;font-size:18px;font-weight:900;margin-bottom:8px}
+.number{text-align:center;font-size:58px;font-weight:900;margin:8px}.prompt{text-align:center;font-size:34px;font-weight:900;margin:8px}.instruction{text-align:center;font-size:21px;font-weight:700;background:#fff7dd;border:2px solid #efc75d;border-radius:13px;padding:11px;margin:12px 0}
+.chart{display:grid;grid-template-columns:repeat(3,1fr);border:3px solid #15324e;border-radius:18px;overflow:hidden;min-height:350px}
+.col{border-right:3px solid #15324e}.col:last-child{border-right:0}.head{text-align:center;font-weight:900;font-size:26px;padding:15px 4px;border-bottom:2px solid #bfd0de;line-height:1.15}.head small{font-size:17px}
+.zone{min-height:270px;padding:14px;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:9px}.zone .disk{width:58px;height:58px;font-size:19px}
+.bank{display:flex;gap:18px;justify-content:center;margin:16px}.source{cursor:grab}.question{text-align:center;font-size:24px;font-weight:900;margin:14px}.question input{width:125px;padding:9px;text-align:center;font-size:31px;border:2px solid #9bb7cf;border-radius:10px;color:#15324e;background:#fff}
+.feedback{text-align:center;min-height:54px;font-size:23px;font-weight:900;padding:10px}.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fly{position:fixed;z-index:101;transition:left 1.6s ease-in-out,top 1.6s ease-in-out;pointer-events:none}
+.arrow{position:fixed;z-index:100;font-size:96px;font-weight:900;pointer-events:none;text-shadow:0 0 8px white,0 0 18px #ffd43b;animation:blink .42s infinite alternate}
+@keyframes blink{from{opacity:.15;transform:scale(.82)}to{opacity:1;transform:scale(1.25)}}
+@media(max-width:700px){main{padding:8px}.card{padding:12px}.head{font-size:19px}.head small{font-size:13px}.zone .disk{width:46px;height:46px;font-size:14px}.prompt{font-size:27px}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand">🔵 🟢 🟠 <span id="brand">Discos de Valor Posicional</span></div>
+<div class="top"><button class="btn" id="langBtn">EN</button><button class="btn" id="homeBtn">🏠 <span id="homeText">Menú principal</span></button></div>
+</header>
+<main>
+<section class="card cover" id="cover">
+<h1 id="welcome">¡Construye, agrupa y mueve!</h1>
+<p id="subtitle">Tú formas los números y haces los cambios de valor posicional.</p>
+<div class="sample"><div class="disk h">100</div><div class="disk t">10</div><div class="disk o">1</div></div>
+<div class="startrow"><input id="studentName" placeholder="Nombre del estudiante"><button class="btn dark" id="autoStart">COMENZAR CON EJEMPLO</button></div>
+<div class="startrow"><input id="teacherNumber" type="number" min="111" max="899" placeholder="Número del maestro, ej. 155"><button class="btn" id="teacherStart">✏️ USAR NÚMERO DEL MAESTRO</button></div>
+</section>
+
+<section class="card hidden" id="game">
+<div class="status"><div><span id="studentLabel">Estudiante</span>: <span id="studentOut"></span></div><div><span id="gradeLabel">Grado</span>: 2.º</div><div><span id="stepLabel">Paso</span>: <span id="stepOut">1</span>/7</div></div>
+<div class="number" id="numberOut">245</div>
+<div class="prompt" id="prompt"></div>
+<div class="chart">
+ <div class="col" id="hundredsCol"><div class="head">CENTENAS<br><small>HUNDREDS</small></div><div class="zone" data-type="h"></div></div>
+ <div class="col" id="tensCol"><div class="head">DECENAS<br><small>TENS</small></div><div class="zone" data-type="t"></div></div>
+ <div class="col" id="onesCol"><div class="head">UNIDADES<br><small>ONES</small></div><div class="zone" data-type="o"></div></div>
+</div>
+<div class="instruction" id="instruction"></div>
+<div class="bank" id="bank"><div class="disk h source" draggable="true" data-type="h">100</div><div class="disk t source" draggable="true" data-type="t">10</div><div class="disk o source" draggable="true" data-type="o">1</div></div>
+<div class="question hidden" id="question"><span id="questionText"></span> <input id="answer" inputmode="numeric"></div>
+<div class="feedback" id="feedback"></div>
+<div class="actions"><button class="btn green" id="checkBtn">✓ COMPROBAR</button><button class="btn dark hidden" id="nextBtn">SIGUIENTE</button><button class="btn orange" id="restartBtn">↻ REINICIAR RETO</button></div>
+<div class="actions hidden" id="finishActions"><button class="btn dark" id="anotherBtn">🎲 OTRO RETO</button><button class="btn" id="sameBtn">↻ MISMO NÚMERO</button><button class="btn" id="teacherAgainBtn">✏️ NÚMERO DEL MAESTRO</button><button class="btn" id="newStudentBtn">👤 NUEVO ESTUDIANTE</button></div>
+</section>
+</main>
+<script>
+(function(){
+"use strict";
+const $=q=>document.querySelector(q), $$=q=>Array.from(document.querySelectorAll(q));
+let lang="es", target=245, phase=1, addUnlocked=false, pendingNext=null;
+const tx={
+ es:{brand:"Discos de Valor Posicional",home:"Menú principal",welcome:"¡Construye, agrupa y mueve!",subtitle:"Tú formas los números y haces los cambios de valor posicional.",student:"Estudiante",grade:"Grado",step:"Paso",check:"✓ COMPROBAR",next:"SIGUIENTE",restart:"↻ REINICIAR RETO",bad:"Revisa con cuidado y vuelve a intentarlo.",wrong:"Ese disco pertenece a otra posición."},
+ en:{brand:"Place Value Disks",home:"Main menu",welcome:"Build, group, and move!",subtitle:"You build the numbers and make the place-value changes.",student:"Student",grade:"Grade",step:"Step",check:"✓ CHECK",next:"NEXT",restart:"↻ RESTART CHALLENGE",bad:"Check carefully and try again.",wrong:"That disk belongs in another place."}
+};
+function t(k){return tx[lang][k]}
+function cfg(n=target){n=Number(n);let h=Math.floor(n/100),d=Math.floor((n%100)/10),u=n%10;if(!Number.isInteger(n)||n<111||n>899||d===0||u===0)return null;return {n,h,d,u,needD:10-d,needU:10-u,afterHundred:n+(10-d)*10,final:n+(10-d)*10+(10-u)}}
+function makeDisk(type){let d=document.createElement("div");d.className="disk "+type;d.dataset.type=type;d.draggable=true;d.textContent=type==="h"?"100":type==="t"?"10":"1";d.addEventListener("dragstart",e=>e.dataTransfer.setData("text/plain",type));d.addEventListener("dblclick",()=>d.remove());return d}
+function count(type){return $$('.zone[data-type="'+type+'"] .disk').length}
+function clearZones(){$$(".zone").forEach(z=>z.innerHTML="")}
+$$(".source").forEach(d=>d.addEventListener("dragstart",e=>e.dataTransfer.setData("text/plain",d.dataset.type)));
+$$(".zone").forEach(z=>{z.addEventListener("dragover",e=>e.preventDefault());z.addEventListener("drop",e=>{e.preventDefault();let type=e.dataTransfer.getData("text/plain");if(type!==z.dataset.type){$("#feedback").textContent=t("wrong");return}if(phase===1||(phase===2&&addUnlocked&&type==="t")||(phase===5&&addUnlocked&&type==="o"))z.appendChild(makeDisk(type))})});
+function setLabels(){ $("#brand").textContent=t("brand");$("#homeText").textContent=t("home");$("#welcome").textContent=t("welcome");$("#subtitle").textContent=t("subtitle");$("#studentLabel").textContent=t("student");$("#gradeLabel").textContent=t("grade");$("#stepLabel").textContent=t("step");$("#checkBtn").textContent=t("check");$("#nextBtn").textContent=t("next");$("#restartBtn").textContent=t("restart");$("#langBtn").textContent=lang==="es"?"EN":"ES";$("#studentName").placeholder=lang==="es"?"Nombre del estudiante":"Student name";$("#teacherNumber").placeholder=lang==="es"?"Número del maestro, ej. 155":"Teacher number, e.g. 155";if(!$("#game").classList.contains("hidden"))render()}
+function render(){
+ let c=cfg(); $("#stepOut").textContent=phase===4?4:phase===7?7:phase; $("#numberOut").textContent=target;$("#feedback").textContent="";$("#answer").value="";$("#question").classList.add("hidden");$("#bank").classList.remove("hidden");$("#checkBtn").classList.remove("hidden");$("#nextBtn").classList.add("hidden");$("#finishActions").classList.add("hidden");
+ let p="",i="";
+ if(phase===1){p=lang==="es"?`Construye ${target} con discos.`:`Build ${target} with disks.`;i=lang==="es"?"Arrastra tú mismo los discos 100, 10 y 1 a su posición correcta.":"Drag the 100, 10, and 1 disks to the correct place yourself."}
+ if(phase===2){p=lang==="es"?"Completa una centena.":"Complete a hundred.";i=lang==="es"?`Tienes ${c.d} decenas. ¿Cuántas decenas faltan para llegar a 10?`:`You have ${c.d} tens. How many more tens make 10?`;$("#question").classList.remove("hidden");$("#questionText").textContent=lang==="es"?"¿Cuántas decenas más necesitas?":"How many more tens do you need?"}
+ if(phase===3){p=lang==="es"?"Reagrupa las 10 decenas.":"Regroup the 10 tens.";i=lang==="es"?"Observa: 10 decenas forman 1 centena. El nuevo 100 debe moverse a CENTENAS.":"Watch: 10 tens make 1 hundred. The new 100 must move to HUNDREDS.";$("#bank").classList.add("hidden")}
+ if(phase===4){p=lang==="es"?"Piensa antes de continuar.":"Think before continuing.";i=lang==="es"?"Mira los discos después del movimiento. No te diremos el número.":"Look at the disks after the move. We will not tell you the number.";$("#question").classList.remove("hidden");$("#questionText").textContent=lang==="es"?"¿Cuál es el nuevo número?":"What is the new number?";$("#bank").classList.add("hidden")}
+ if(phase===5){p=lang==="es"?"Completa una decena.":"Complete a ten.";i=lang==="es"?`Tienes ${c.u} unidades. ¿Cuántas unidades faltan para llegar a 10?`:`You have ${c.u} ones. How many more ones make 10?`;$("#question").classList.remove("hidden");$("#questionText").textContent=lang==="es"?"¿Cuántas unidades más necesitas?":"How many more ones do you need?"}
+ if(phase===6){p=lang==="es"?"Reagrupa las 10 unidades.":"Regroup the 10 ones.";i=lang==="es"?"Observa: 10 unidades forman 1 decena. El nuevo 10 debe moverse a DECENAS.":"Watch: 10 ones make 1 ten. The new 10 must move to TENS.";$("#bank").classList.add("hidden")}
+ if(phase===7){p=lang==="es"?"Identifica el resultado final.":"Identify the final result.";i=lang==="es"?"Mira las tres posiciones y escribe el número que ahora representan.":"Look at all three places and write the number they now represent.";$("#question").classList.remove("hidden");$("#questionText").textContent=lang==="es"?"¿Cuál es el nuevo número?":"What is the new number?";$("#bank").classList.add("hidden")}
+ $("#prompt").textContent=p;$("#instruction").textContent=i;
+}
+function success(msg,next){$("#feedback").textContent=msg;$("#checkBtn").classList.add("hidden");$("#nextBtn").classList.remove("hidden");pendingNext=next}
+function fly(fromId,toId,type,done){let a=$(fromId).getBoundingClientRect(),b=$(toId).getBoundingClientRect(),arrow=document.createElement("div");arrow.className="arrow";arrow.textContent="⬅";arrow.style.left=((a.left+b.left)/2-35)+"px";arrow.style.top=(a.top+105)+"px";document.body.appendChild(arrow);let d=makeDisk(type);d.classList.add("fly");d.style.left=(a.left+a.width/2-29)+"px";d.style.top=(a.top+135)+"px";document.body.appendChild(d);requestAnimationFrame(()=>requestAnimationFrame(()=>{d.style.left=(b.left+b.width/2-29)+"px";d.style.top=(b.top+135)+"px"}));setTimeout(()=>{arrow.remove();d.remove();$(toId+" .zone").appendChild(makeDisk(type));done()},1750)}
+function check(){
+ let c=cfg();
+ if(phase===1){if(count("h")===c.h&&count("t")===c.d&&count("o")===c.u)success(lang==="es"?`¡Muy bien! Construiste ${target}.`:`Great! You built ${target}.`,2);else $("#feedback").textContent=t("bad")}
+ else if(phase===2){if(!addUnlocked){if(Number($("#answer").value)===c.needD){addUnlocked=true;$("#question").classList.add("hidden");$("#feedback").textContent=lang==="es"?`Correcto. Ahora agrega tú ${c.needD} discos de 10 a DECENAS.`:`Correct. Now add ${c.needD} ten-disks to TENS.`}else $("#feedback").textContent=t("bad")}else{if(count("t")===10)success(lang==="es"?"¡Ya tienes 10 decenas!":"You now have 10 tens!",3);else $("#feedback").textContent=t("bad")}}
+ else if(phase===3){if(count("t")!==10){$("#feedback").textContent=t("bad");return}$(".zone[data-type='t']").innerHTML="";$("#checkBtn").classList.add("hidden");$("#feedback").textContent=lang==="es"?"Sigue la flecha: la nueva centena cambia de posición.":"Follow the arrow: the new hundred changes place.";fly("#tensCol","#hundredsCol","h",()=>{phase=4;addUnlocked=false;render()})}
+ else if(phase===4){if(Number($("#answer").value)===c.afterHundred)success(lang==="es"?"¡Correcto! Lo identificaste tú mismo.":"Correct! You identified it yourself.",5);else $("#feedback").textContent=t("bad")}
+ else if(phase===5){if(!addUnlocked){if(Number($("#answer").value)===c.needU){addUnlocked=true;$("#question").classList.add("hidden");$("#feedback").textContent=lang==="es"?`Correcto. Ahora agrega tú ${c.needU} discos de 1 a UNIDADES.`:`Correct. Now add ${c.needU} one-disks to ONES.`}else $("#feedback").textContent=t("bad")}else{if(count("o")===10)success(lang==="es"?"¡Ya tienes 10 unidades!":"You now have 10 ones!",6);else $("#feedback").textContent=t("bad")}}
+ else if(phase===6){if(count("o")!==10){$("#feedback").textContent=t("bad");return}$(".zone[data-type='o']").innerHTML="";$("#checkBtn").classList.add("hidden");$("#feedback").textContent=lang==="es"?"Sigue la flecha: la nueva decena cambia de posición.":"Follow the arrow: the new ten changes place.";fly("#onesCol","#tensCol","t",()=>{phase=7;addUnlocked=false;render()})}
+ else if(phase===7){if(Number($("#answer").value)===c.final){$("#feedback").textContent=lang==="es"?`¡Excelente! Formaste e identificaste ${c.final}.`:`Excellent! You built and identified ${c.final}.`;$("#checkBtn").classList.add("hidden");$("#question").classList.add("hidden");$("#finishActions").classList.remove("hidden")}else $("#feedback").textContent=t("bad")}
+}
+function begin(n){let name=$("#studentName").value.trim(),c=cfg(n);if(!name){$("#studentName").focus();return}if(!c){alert(lang==="es"?"Usa un número de 3 cifras entre 111 y 899, con decenas y unidades distintas de 0.":"Use a 3-digit number from 111 to 899 with nonzero tens and ones.");return}target=Number(n);$("#studentOut").textContent=name;clearZones();phase=1;addUnlocked=false;pendingNext=null;$("#cover").classList.add("hidden");$("#game").classList.remove("hidden");render()}
+$("#checkBtn").addEventListener("click",check);$("#nextBtn").addEventListener("click",()=>{if(pendingNext){phase=pendingNext;pendingNext=null;addUnlocked=false;render()}});
+$("#autoStart").addEventListener("click",()=>begin(245));$("#teacherStart").addEventListener("click",()=>begin($("#teacherNumber").value));
+$("#restartBtn").addEventListener("click",()=>{
+  clearZones();
+  phase=1;
+  addUnlocked=false;
+  pendingNext=null;
+  $("#answer").value="";
+  $("#feedback").textContent="";
+  $("#question").classList.add("hidden");
+  $("#finishActions").classList.add("hidden");
+  $("#nextBtn").classList.add("hidden");
+  $("#checkBtn").classList.remove("hidden");
+  render();
+});
+$("#anotherBtn").addEventListener("click",()=>begin((1+Math.floor(Math.random()*7))*100+(1+Math.floor(Math.random()*9))*10+(1+Math.floor(Math.random()*9))));
+$("#sameBtn").addEventListener("click",()=>begin(target));
+$("#teacherAgainBtn").addEventListener("click",()=>{$("#game").classList.add("hidden");$("#cover").classList.remove("hidden");$("#teacherNumber").focus()});
+$("#newStudentBtn").addEventListener("click",()=>{$("#game").classList.add("hidden");$("#cover").classList.remove("hidden");$("#studentName").value="";$("#teacherNumber").value="";$("#studentName").focus()});
+$("#langBtn").addEventListener("click",()=>{lang=lang==="es"?"en":"es";setLabels()});$("#homeBtn").addEventListener("click",()=>{location.href="index.html"});
+setLabels();
+})();
+</script>
+</body></html>
